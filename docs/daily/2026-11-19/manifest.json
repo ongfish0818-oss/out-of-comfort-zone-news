@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-19",
+  "demo": true,
+  "account": "outofcomfortzone.daily",
+  "images": [
+    "01_cover.jpg",
+    "02_story.jpg",
+    "03_story.jpg",
+    "04_story.jpg",
+    "05_story.jpg",
+    "06_story.jpg"
+  ],
+  "articles": [
+    {
+      "title": "SAMPLE ONLY: Malaysian business indicators strengthen",
+      "summary": "Synthetic demonstration text for testing the publishing layout only; this is not a real article and must never be published as news.",
+      "url": "https://theedgemalaysia.com/node/000001",
+      "published": "2026-11-19T07:00:00+08:00",
+      "source": "DEMO – not The Edge reporting",
+      "score": 5
+    },
+    {
+      "title": "SAMPLE ONLY: Company earnings rise in mock report",
+      "summary": "Synthetic demonstration text illustrating the card layout; this is not a verified business result and must never be posted.",
+      "url": "https://theedgemalaysia.com/node/000002",
+      "published": "2026-11-19T07:00:00+08:00",
+      "source": "DEMO – not The Edge reporting",
+      "score": 5
+    },
+    {
+      "title": "SAMPLE ONLY: Manufacturing investment announced",
+      "summary": "Synthetic example for visual testing purposes only, not an announcement that actually happened or a licensed news summary.",
+      "url": "https://theedgemalaysia.com/node/000003",
+      "published": "2026-11-19T07:00:00+08:00",
+      "source": "DEMO – not The Edge reporting",
+      "score": 5
+    },
+    {
+      "title": "SAMPLE ONLY: Markets respond to policy changes",
+      "summary": "Synthetic example content to validate the Instagram carousel rendering system without publishing or inventing a real news event.",
+      "url": "https://theedgemalaysia.com/node/000004",
+      "published": "2026-11-19T07:00:00+08:00",
+      "source": "DEMO – not The Edge reporting",
+      "score": 5
+    },
+    {
+      "title": "SAMPLE ONLY: New economic data for a test card",
+      "summary": "Synthetic fifth item included so that the six-slide export and post publishing safeguards can be tested locally.",
+      "url": "https://theedgemalaysia.com/node/000005",
+      "published": "2026-11-19T07:00:00+08:00",
+      "source": "DEMO – not The Edge reporting",
+      "score": 5
+    }
+  ]
+}
