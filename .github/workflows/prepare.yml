@@ -13,7 +13,7 @@ permissions:
   contents: write
 jobs:
   prepare:
-    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.demo) || vars.RIGHTS_CONFIRMED == 'true' }}
+    # Allow scheduled preparation; use demo content until source rights are confirmed.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +25,7 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Build carousel and verify sources
         env:
-          DEMO: ${{ github.event_name == 'workflow_dispatch' && inputs.demo && 'true' || 'false' }}
+          DEMO: ${{ (github.event_name == 'workflow_dispatch' && inputs.demo) || vars.RIGHTS_CONFIRMED != 'true' }}
         run: |
           if [ "$DEMO" = "true" ]; then
             python src/pipeline.py prepare --demo
@@ -39,7 +39,7 @@ jobs:
           path: docs/daily/
           retention-days: 7
       - name: Store live graphics for GitHub Pages
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.demo) }}
+        if: ${{ vars.RIGHTS_CONFIRMED == 'true' && !(github.event_name == 'workflow_dispatch' && inputs.demo) }}
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
