@@ -6,39 +6,45 @@ on:
   workflow_dispatch:
     inputs:
       live_preview:
-        description: 'Retrieve real RSS articles for private review ONLY (never publish)'
+        description: 'Retrieve real feed stories for REVIEW ONLY (no Instagram post)'
         type: boolean
         default: false
 permissions:
   contents: write
+concurrency:
+  group: ocz-prepare
+  cancel-in-progress: false
 jobs:
   prepare:
-    # Allow scheduled preparation; use demo content until source rights are confirmed.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Check syntax and run tests
+        run: |
+          python -m py_compile src/pipeline.py
+          python -m unittest discover -s tests -v
       - name: Build carousel and verify sources
         env:
-          DEMO: ${{ (github.event_name == 'workflow_dispatch' && !inputs.live_preview) || (github.event_name == 'schedule' && vars.RIGHTS_CONFIRMED != 'true') }}
+          DEMO: ${{ github.event_name == 'workflow_dispatch' && !inputs.live_preview }}
+          EDGE_FEED_URL: ${{ vars.EDGE_FEED_URL }}
         run: |
           if [ "$DEMO" = "true" ]; then
             python src/pipeline.py prepare --demo
           else
             python src/pipeline.py prepare
           fi
-      - name: Upload files for manual review
+      - name: Upload images and source manifest for review
         uses: actions/upload-artifact@v4
         with:
           name: instagram-carousel
           path: docs/daily/
           retention-days: 7
-      - name: Store live graphics for GitHub Pages
+      - name: Store LIVE images for GitHub Pages (only after rights approval)
         if: ${{ github.event_name == 'schedule' && vars.RIGHTS_CONFIRMED == 'true' }}
         run: |
           git config user.name 'github-actions[bot]'
