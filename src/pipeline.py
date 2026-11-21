@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / 'data'
 DOCS = ROOT / 'docs' / 'daily'
 TZ = ZoneInfo('Asia/Kuala_Lumpur')
-FEED = os.getenv('EDGE_FEED_URL', 'https://myassets.theedgemalaysia.com/arc/outboundfeeds/rss')
+FEED = os.getenv('EDGE_FEED_URL') or 'https://myassets.theedgemalaysia.com/arc/outboundfeeds/rss'
 HISTORY = DATA / 'history.json'
 ALLOWED = ('theedgemalaysia.com', 'www.theedgemalaysia.com')
 KEYS = {'economy':8,'gdp':9,'bursa':10,'klci':9,'bank negara':10,'policy':7,'government':6,'investment':7,'corporate':5,'earnings':7,'profit':6,'semiconductor':6,'data centre':7,'ringgit':8,'trade':6,'budget':6,'inflation':8}
@@ -52,7 +52,7 @@ def feed_items(max_age_hours=40, session=None, now=None):
     # Report the actual response without printing full copyrighted article text or credentials.
     print(f'Feed diagnostic: HTTP {resp.status_code}; final URL={resp.url}; content type={resp.headers.get("Content-Type","unknown")}; bytes={len(resp.content)}', flush=True)
     resp.raise_for_status()
-    payload = resp.content.lstrip()
+    payload = resp.content.lstrip(b'\xef\xbb\xbf \t\r\n')
     if not (payload.startswith(b'<?xml') or payload.startswith(b'<rss') or payload.startswith(b'<feed') or payload.startswith(b'<rdf:RDF')):
         label = 'HTML website/login/challenge' if b'<html' in payload[:500].lower() or b'<!doctype html' in payload[:500].lower() else 'non-XML content'
         raise RuntimeError(f'RSS endpoint returned {label}, not a feed. Check EDGE_FEED_URL; current URL: {resp.url}. No articles were created.')
