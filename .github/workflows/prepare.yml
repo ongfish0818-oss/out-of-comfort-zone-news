@@ -5,10 +5,10 @@ on:
       timezone: Asia/Kuala_Lumpur
   workflow_dispatch:
     inputs:
-      demo:
-        description: 'Safe offline demo (synthetic headlines; never publish)'
+      live_preview:
+        description: 'Retrieve real RSS articles for private review ONLY (never publish)'
         type: boolean
-        default: true
+        default: false
 permissions:
   contents: write
 jobs:
@@ -25,7 +25,7 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Build carousel and verify sources
         env:
-          DEMO: ${{ (github.event_name == 'workflow_dispatch' && inputs.demo) || vars.RIGHTS_CONFIRMED != 'true' }}
+          DEMO: ${{ (github.event_name == 'workflow_dispatch' && !inputs.live_preview) || (github.event_name == 'schedule' && vars.RIGHTS_CONFIRMED != 'true') }}
         run: |
           if [ "$DEMO" = "true" ]; then
             python src/pipeline.py prepare --demo
@@ -39,7 +39,7 @@ jobs:
           path: docs/daily/
           retention-days: 7
       - name: Store live graphics for GitHub Pages
-        if: ${{ vars.RIGHTS_CONFIRMED == 'true' && !(github.event_name == 'workflow_dispatch' && inputs.demo) }}
+        if: ${{ github.event_name == 'schedule' && vars.RIGHTS_CONFIRMED == 'true' }}
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
